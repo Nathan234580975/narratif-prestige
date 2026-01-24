@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notre Histoire - Édition Prestige</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --gold: #d4af37;
+            --dark: #0a0a0a; /* Noir plus profond */
+            --light: #fdfcf5;
+            --gold-gradient: linear-gradient(45deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
+        }
+
+        body {
+            margin: 0; background-color: var(--dark); color: var(--light);
+            font-family: 'Lato', sans-serif; overflow-x: hidden;
+        }
+
+        h1, h2, h3 { font-family: 'Playfair Display', serif; }
+
+        /* --- PARTICULES D'OR --- */
+        .gold-dust {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 1;
+        }
+
+        /* --- HERO SECTION --- */
+        .hero {
+            height: 100vh;
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.8)), url('.//images/cover.jpg') center/cover;
+            display: flex; flex-direction: column; justify-content: center;
+            align-items: center; text-align: center; position: relative; z-index: 2;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem; background: var(--gold-gradient);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .timer-box {
+            border: 1px solid var(--gold); padding: 25px; margin-top: 30px;
+            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px);
+            border-radius: 2px; /* Coins carrés pour le luxe */
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
+        }
+
+        #timer { font-size: 1.8rem; font-family: 'Playfair Display'; color: white; letter-spacing: 2px; }
+
+        /* --- SECTION MESSAGE (Typewriter) --- */
+        .intro-message {
+            padding: 100px 20px; text-align: center; max-width: 800px; margin: 0 auto;
+            font-family: 'Playfair Display', serif; font-size: 1.6rem; font-style: italic;
+            line-height: 1.8; color: var(--light);
+        }
+
+        /* --- TIMELINE AMÉLIORÉE --- */
+        .timeline-section {
+            padding: 80px 20px; background: #111; position: relative;
+        }
+
+        .timeline-line {
+            position: absolute; left: 30px; top: 0; bottom: 0; width: 1px;
+            background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+        }
+
+        .event {
+            position: relative; margin-bottom: 80px; padding-left: 60px;
+            opacity: 0; transform: translateY(30px); transition: 1s all ease;
+        }
+
+        .event.visible { opacity: 1; transform: translateY(0); }
+
+        .event::before {
+            content: ''; position: absolute; left: 25px; top: 5px;
+            width: 10px; height: 10px; background: var(--gold);
+            border-radius: 50%; box-shadow: 0 0 10px var(--gold);
+        }
+
+        .event img {
+            width: 100%; max-width: 400px; border-radius: 0; 
+            margin-top: 20px; border: 1px solid rgba(212, 175, 55, 0.3);
+            filter: grayscale(30%); transition: 0.5s;
+        }
+        .event img:hover { filter: grayscale(0%); border-color: var(--gold); }
+
+        /* --- SECTION VIDEO LUXE --- */
+        .video-section { padding: 100px 20px; text-align: center; background: var(--dark); }
+        
+        .video-container {
+            position: relative; display: inline-block;
+            padding: 10px; border: 1px solid var(--gold);
+            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+        }
+
+        video { width: 100%; max-width: 600px; display: block; }
+
+        .footer {
+            padding: 60px; text-align: center; border-top: 1px solid rgba(212, 175, 55, 0.2);
+            background: #000; color: var(--gold); letter-spacing: 4px; text-transform: uppercase;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="gold-dust" id="dust-container"></div>
+
+    <audio id="bg-music" loop> 
+        <source src=".//Ruth_B._-_Dandelions__Lyrics___Slowed___Reverb_(256k).mp3"> 
+    </audio>
+
+    <div class="hero" onclick="playMedia()">
+        <h1>A & B</h1>
+        <div class="timer-box">
+            <div id="timer">Calcul en cours...</div>
+            <div style="font-size: 0.7rem; color: var(--gold); margin-top: 10px; text-transform: uppercase; letter-spacing: 2px;">D'amour inconditionnel</div>
+        </div>
+        <p style="margin-top:40px; font-size: 0.7rem; opacity: 0.5; letter-spacing: 1px;">(Cliquez n'importe où pour le son)</p>
+    </div>
+
+    <section class="intro-message" id="trigger-typewriter">
+        <span id="typewriter-text"></span>
+    </section>
+
+    <div class="timeline-section">
+        <div class="timeline-line"></div>
+        <div class="event anim">
+            <div style="color: var(--gold); font-weight: bold;">14 Février 2020</div>
+            <h3>La Rencontre</h3>
+            <p>Un regard qui a scellé notre destin à jamais...</p>
+            <img src=".//fille 2.png">
+        </div>
+
+        <div class="event anim">
+            <div style="color: var(--gold); font-weight: bold;">25 Décembre 2021</div>
+            <h3>Le Premier Voyage</h3>
+            <p>Kribi, l'océan, et la promesse d'un futur à deux.</p>
+            <img src=".//fille 2.png">
+        </div>
+    </div>
+
+    <div class="video-section">
+        <h2 style="color: var(--gold); margin-bottom: 50px; font-style: italic;">Une déclaration éternelle</h2>
+        <div class="video-container">
+            <video controls playsinline id="myVideo">
+                <source src=".//b03b0c056764ffa9c93f96af9833873d.mp4" type="video/mp4">
+            </video>
+        </div>
+    </div>
+
+    <div class="footer">
+        Joyeuse Saint-Valentin
+    </div>
+
+    <script>
+        const startDate = new Date(2020, 1, 14, 18, 0);
+        const longMessage = "Chaque chapitre de notre histoire est mon préféré. À travers le temps et les saisons, mon cœur ne bat que pour toi. Voici quelques souvenirs de notre magnifique voyage ensemble...";
+        let typewriterStarted = false;
+
+        function updateTimer() {
+            const now = new Date();
+            const diff = now - startDate;
+            const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const minutes = Math.floor((diff / (1000 * 60)) % 60);
+            const seconds = Math.floor((diff / 1000) % 60);
+            document.getElementById('timer').innerHTML = `${days}j ${hours}h ${minutes}m ${seconds}s`;
+        }
+        setInterval(updateTimer, 1000);
+
+        function playMedia() {
+            const music = document.getElementById('bg-music');
+            music.volume = 0;
+            music.play();
+            // Fade in music
+            let vol = 0;
+            let fade = setInterval(() => {
+                if (vol < 0.4) { vol += 0.02; music.volume = vol; }
+                else clearInterval(fade);
+            }, 100);
+        }
+
+        // --- MACHINE À ÉCRIRE AU SCROLL ---
+        function typeWriter(text, i, elementId) {
+            if (i < text.length) {
+                document.getElementById(elementId).innerHTML += text.charAt(i);
+                setTimeout(() => typeWriter(text, i + 1, elementId), 50);
+            }
+        }
+
+        // --- INTERSECTION OBSERVER ---
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    if (entry.target.id === "trigger-typewriter" && !typewriterStarted) {
+                        typewriterStarted = true;
+                        typeWriter(longMessage, 0, "typewriter-text");
+                    } else {
+                        entry.target.classList.add('visible');
+                    }
+                }
+            });
+        }, { threshold: 0.3 });
+
+        document.querySelectorAll('.anim, #trigger-typewriter').forEach(el => observer.observe(el));
+
+        // --- POUSSIÈRE D'OR (Petite touche visuelle) ---
+        function createGoldDust() {
+            const container = document.getElementById('dust-container');
+            for(let i=0; i<30; i++) {
+                let dust = document.createElement('div');
+                dust.style.position = 'absolute';
+                dust.style.width = '2px';
+                dust.style.height = '2px';
+                dust.style.background = 'var(--gold)';
+                dust.style.left = Math.random() * 100 + 'vw';
+                dust.style.top = Math.random() * 100 + 'vh';
+                dust.style.opacity = Math.random();
+                dust.style.boxShadow = '0 0 5px var(--gold)';
+                container.appendChild(dust);
+            }
+        }
+        createGoldDust();
+    </script>
+</body>
+</html>
