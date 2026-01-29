@@ -9,11 +9,12 @@
     <style>
         :root {
             --gold: #d4af37;
-            --dark: #0a0a0a; /* Noir plus profond */
+            --dark: #050505;
             --light: #fdfcf5;
             --gold-gradient: linear-gradient(45deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
         }
 
+        html { scroll-behavior: smooth; }
         body {
             margin: 0; background-color: var(--dark); color: var(--light);
             font-family: 'Lato', sans-serif; overflow-x: hidden;
@@ -21,133 +22,173 @@
 
         h1, h2, h3 { font-family: 'Playfair Display', serif; }
 
-        /* --- PARTICULES D'OR --- */
-        .gold-dust {
+        /* --- POUSSIÈRE D'OR ANIMÉE --- */
+        #dust-container {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             pointer-events: none; z-index: 1;
+        }
+
+        .dust {
+            position: absolute; background: var(--gold); border-radius: 50%;
+            filter: blur(1px); animation: float 15s infinite linear; opacity: 0.3;
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0) translateX(0); opacity: 0; }
+            50% { opacity: 0.6; }
+            100% { transform: translateY(-100vh) translateX(50px); opacity: 0; }
         }
 
         /* --- HERO SECTION --- */
         .hero {
             height: 100vh;
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.8)), url('.//images/cover.jpg') center/cover;
+            background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.8)), url('.//images/cover.jpg') center/cover fixed;
             display: flex; flex-direction: column; justify-content: center;
             align-items: center; text-align: center; position: relative; z-index: 2;
         }
 
         .hero h1 {
-            font-size: 3.5rem; background: var(--gold-gradient);
+            font-size: clamp(3rem, 10vw, 5rem); background: var(--gold-gradient);
             -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-            margin-bottom: 10px;
+            margin-bottom: 0; filter: drop-shadow(0 5px 15px rgba(0,0,0,0.5));
         }
 
         .timer-box {
-            border: 1px solid var(--gold); padding: 25px; margin-top: 30px;
-            background: rgba(255, 255, 255, 0.05); backdrop-filter: blur(10px);
-            border-radius: 2px; /* Coins carrés pour le luxe */
-            box-shadow: 0 0 20px rgba(212, 175, 55, 0.1);
+            padding: 30px 50px; margin-top: 40px;
+            background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
         }
 
-        #timer { font-size: 1.8rem; font-family: 'Playfair Display'; color: white; letter-spacing: 2px; }
+        #timer { font-size: 2rem; color: #fff; letter-spacing: 3px; font-weight: 300; }
 
-        /* --- SECTION MESSAGE (Typewriter) --- */
+        /* --- MESSAGE TYPEWRITER --- */
+        .intro-section { padding: 120px 20px; text-align: center; z-index: 2; position: relative; }
         .intro-message {
-            padding: 100px 20px; text-align: center; max-width: 800px; margin: 0 auto;
-            font-family: 'Playfair Display', serif; font-size: 1.6rem; font-style: italic;
-            line-height: 1.8; color: var(--light);
+            max-width: 900px; margin: 0 auto; font-family: 'Playfair Display', serif;
+            font-size: 1.8rem; line-height: 2; color: var(--light); font-style: italic;
         }
 
-        /* --- TIMELINE AMÉLIORÉE --- */
-        .timeline-section {
-            padding: 80px 20px; background: #111; position: relative;
-        }
-
-        .timeline-line {
-            position: absolute; left: 30px; top: 0; bottom: 0; width: 1px;
-            background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+        /* --- TIMELINE PRESTIGE --- */
+        .timeline-container { position: relative; max-width: 1100px; margin: 0 auto; padding: 40px 0; }
+        
+        /* La ligne centrale */
+        .timeline-container::after {
+            content: ''; position: absolute; width: 1px; background: var(--gold);
+            top: 0; bottom: 0; left: 50%; margin-left: -1px;
+            opacity: 0.3;
         }
 
         .event {
-            position: relative; margin-bottom: 80px; padding-left: 60px;
-            opacity: 0; transform: translateY(30px); transition: 1s all ease;
+            padding: 20px 40px; position: relative; width: 50%; box-sizing: border-box;
+            opacity: 0; transform: translateY(50px); transition: all 1s ease;
         }
+
+        .event.left { left: 0; text-align: right; }
+        .event.right { left: 50%; text-align: left; }
 
         .event.visible { opacity: 1; transform: translateY(0); }
 
-        .event::before {
-            content: ''; position: absolute; left: 25px; top: 5px;
-            width: 10px; height: 10px; background: var(--gold);
-            border-radius: 50%; box-shadow: 0 0 10px var(--gold);
+        /* Le point sur la ligne */
+        .event::after {
+            content: ''; position: absolute; width: 16px; height: 16px;
+            right: -8px; top: 30px; background: var(--dark);
+            border: 2px solid var(--gold); border-radius: 50%; z-index: 10;
         }
+        .event.right::after { left: -8px; }
+
+        .event-content {
+            background: rgba(255, 255, 255, 0.02); padding: 30px;
+            border: 1px solid rgba(212, 175, 55, 0.1); transition: 0.4s;
+        }
+        .event-content:hover { border-color: var(--gold); background: rgba(255, 255, 255, 0.05); }
 
         .event img {
-            width: 100%; max-width: 400px; border-radius: 0; 
-            margin-top: 20px; border: 1px solid rgba(212, 175, 55, 0.3);
-            filter: grayscale(30%); transition: 0.5s;
-        }
-        .event img:hover { filter: grayscale(0%); border-color: var(--gold); }
-
-        /* --- SECTION VIDEO LUXE --- */
-        .video-section { padding: 100px 20px; text-align: center; background: var(--dark); }
-        
-        .video-container {
-            position: relative; display: inline-block;
-            padding: 10px; border: 1px solid var(--gold);
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
+            width: 100%; border-radius: 0; margin: 20px 0;
+            border: 1px solid rgba(212, 175, 55, 0.2);
         }
 
-        video { width: 100%; max-width: 600px; display: block; }
+        /* --- VIDEO SECTION --- */
+        .video-section { padding: 120px 20px; text-align: center; }
+        .video-wrapper {
+            max-width: 700px; margin: 0 auto; padding: 15px;
+            border: 1px solid var(--gold); position: relative;
+        }
+        .video-wrapper::before {
+            content: ''; position: absolute; top: -10px; left: -10px; right: -10px; bottom: -10px;
+            border: 1px solid rgba(212, 175, 55, 0.3); z-index: -1;
+        }
+        video { width: 100%; display: block; box-shadow: 0 0 50px rgba(0,0,0,0.8); }
 
+        /* --- FOOTER --- */
         .footer {
-            padding: 60px; text-align: center; border-top: 1px solid rgba(212, 175, 55, 0.2);
-            background: #000; color: var(--gold); letter-spacing: 4px; text-transform: uppercase;
+            padding: 100px 20px; text-align: center; background: #000;
+            color: var(--gold); letter-spacing: 6px; text-transform: uppercase;
         }
 
+        @media (max-width: 768px) {
+            .timeline-container::after { left: 31px; }
+            .event { width: 100%; padding-left: 70px; padding-right: 25px; text-align: left !important; }
+            .event.right { left: 0; }
+            .event::after { left: 23px !important; }
+        }
     </style>
 </head>
 <body>
 
-    <div class="gold-dust" id="dust-container"></div>
+    <div id="dust-container"></div>
 
     <audio id="bg-music" loop> 
-        <source src=".//Ruth_B._-_Dandelions__Lyrics___Slowed___Reverb_(256k).mp3"> 
+        <source src=".//musique/Ruth_B._-_Dandelions__Lyrics___Slowed___Reverb_(256k).mp3"> 
     </audio>
 
     <div class="hero" onclick="playMedia()">
-        <h1>A & B</h1>
+        <h1>Sarah & Thomas</h1>
         <div class="timer-box">
-            <div id="timer">Calcul en cours...</div>
-            <div style="font-size: 0.7rem; color: var(--gold); margin-top: 10px; text-transform: uppercase; letter-spacing: 2px;">D'amour inconditionnel</div>
+            <div id="timer">Calcul...</div>
+            <p style="font-size: 0.8rem; color: var(--gold); margin-top: 15px; text-transform: uppercase; letter-spacing: 3px;">De pur bonheur</p>
         </div>
-        <p style="margin-top:40px; font-size: 0.7rem; opacity: 0.5; letter-spacing: 1px;">(Cliquez n'importe où pour le son)</p>
+        <p style="position: absolute; bottom: 30px; opacity: 0.4; font-size: 0.8rem;">Faites défiler pour découvrir notre histoire</p>
     </div>
 
-    <section class="intro-message" id="trigger-typewriter">
-        <span id="typewriter-text"></span>
+    <section class="intro-section" id="trigger-typewriter">
+        <div class="intro-message" id="typewriter-text"></div>
     </section>
 
-    <div class="timeline-section">
-        <div class="timeline-line"></div>
-        <div class="event anim">
-            <div style="color: var(--gold); font-weight: bold;">14 Février 2020</div>
-            <h3>La Rencontre</h3>
-            <p>Un regard qui a scellé notre destin à jamais...</p>
-            <img src=".//fille 2.png">
+    <div class="timeline-container">
+        <div class="event left anim">
+            <div class="event-content">
+                <div style="color: var(--gold); font-size: 0.9rem; margin-bottom: 10px;">14 FÉVRIER 2020</div>
+                <h3>Le Premier Regard</h3>
+                <p>Une rencontre inattendue qui allait devenir la plus belle page de ma vie.</p>
+                <img src=".//images/photo1.jpg">
+            </div>
         </div>
 
-        <div class="event anim">
-            <div style="color: var(--gold); font-weight: bold;">25 Décembre 2021</div>
-            <h3>Le Premier Voyage</h3>
-            <p>Kribi, l'océan, et la promesse d'un futur à deux.</p>
-            <img src=".//fille 2.png">
+        <div class="event right anim">
+            <div class="event-content">
+                <div style="color: var(--gold); font-size: 0.9rem; margin-bottom: 10px;">25 DÉCEMBRE 2021</div>
+                <h3>Notre Premier Noël</h3>
+                <p>Sous les lumières de la ville, j'ai su que c'était toi pour toujours.</p>
+                <img src=".//images/photo2.jpg">
+            </div>
+        </div>
+
+        <div class="event left anim">
+            <div class="event-content">
+                <div style="color: var(--gold); font-size: 0.9rem; margin-bottom: 10px;">12 JUILLET 2023</div>
+                <h3>Le Grand "Oui"</h3>
+                <p>Un nouveau chapitre qui commence, main dans la main.</p>
+                <img src=".//images/photo3.jpg">
+            </div>
         </div>
     </div>
 
     <div class="video-section">
-        <h2 style="color: var(--gold); margin-bottom: 50px; font-style: italic;">Une déclaration éternelle</h2>
-        <div class="video-container">
-            <video controls playsinline id="myVideo">
-                <source src=".//b03b0c056764ffa9c93f96af9833873d.mp4" type="video/mp4">
+        <h2 style="color: var(--gold); font-size: 2.5rem; margin-bottom: 60px; font-style: italic;">Pour l'éternité</h2>
+        <div class="video-wrapper">
+            <video controls playsinline>
+                <source src=".//videos/message.mp4" type="video/mp4">
             </video>
         </div>
     </div>
@@ -158,7 +199,7 @@
 
     <script>
         const startDate = new Date(2020, 1, 14, 18, 0);
-        const longMessage = "Chaque chapitre de notre histoire est mon préféré. À travers le temps et les saisons, mon cœur ne bat que pour toi. Voici quelques souvenirs de notre magnifique voyage ensemble...";
+        const storyText = "Chaque seconde passée à tes côtés est un trésor que je garde précieusement. Voici le voyage de notre amour, des premiers sourires aux promesses d'éternité...";
         let typewriterStarted = false;
 
         function updateTimer() {
@@ -174,57 +215,48 @@
 
         function playMedia() {
             const music = document.getElementById('bg-music');
-            music.volume = 0;
+            music.volume = 0.5;
             music.play();
-            // Fade in music
-            let vol = 0;
-            let fade = setInterval(() => {
-                if (vol < 0.4) { vol += 0.02; music.volume = vol; }
-                else clearInterval(fade);
-            }, 100);
         }
 
-        // --- MACHINE À ÉCRIRE AU SCROLL ---
         function typeWriter(text, i, elementId) {
             if (i < text.length) {
                 document.getElementById(elementId).innerHTML += text.charAt(i);
-                setTimeout(() => typeWriter(text, i + 1, elementId), 50);
+                setTimeout(() => typeWriter(text, i + 1, elementId), 40);
             }
         }
 
-        // --- INTERSECTION OBSERVER ---
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     if (entry.target.id === "trigger-typewriter" && !typewriterStarted) {
                         typewriterStarted = true;
-                        typeWriter(longMessage, 0, "typewriter-text");
-                    } else {
-                        entry.target.classList.add('visible');
+                        typeWriter(storyText, 0, "typewriter-text");
                     }
+                    entry.target.classList.add('visible');
                 }
             });
-        }, { threshold: 0.3 });
+        }, { threshold: 0.2 });
 
         document.querySelectorAll('.anim, #trigger-typewriter').forEach(el => observer.observe(el));
 
-        // --- POUSSIÈRE D'OR (Petite touche visuelle) ---
-        function createGoldDust() {
+        // Création des particules d'or
+        function initGoldDust() {
             const container = document.getElementById('dust-container');
-            for(let i=0; i<30; i++) {
-                let dust = document.createElement('div');
-                dust.style.position = 'absolute';
-                dust.style.width = '2px';
-                dust.style.height = '2px';
-                dust.style.background = 'var(--gold)';
-                dust.style.left = Math.random() * 100 + 'vw';
-                dust.style.top = Math.random() * 100 + 'vh';
-                dust.style.opacity = Math.random();
-                dust.style.boxShadow = '0 0 5px var(--gold)';
-                container.appendChild(dust);
+            for(let i=0; i<50; i++) {
+                let d = document.createElement('div');
+                d.className = 'dust';
+                let size = Math.random() * 3 + 'px';
+                d.style.width = size;
+                d.style.height = size;
+                d.style.left = Math.random() * 100 + 'vw';
+                d.style.top = Math.random() * 100 + 'vh';
+                d.style.animationDelay = Math.random() * 10 + 's';
+                d.style.animationDuration = (Math.random() * 10 + 10) + 's';
+                container.appendChild(d);
             }
         }
-        createGoldDust();
+        initGoldDust();
     </script>
 </body>
 </html>
